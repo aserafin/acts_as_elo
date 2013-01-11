@@ -67,7 +67,9 @@ module Acts
 
       def elo_update(opponent, opts={})
         begin
-          if self.class.respond_to?(:acts_as_elo_options) && self.class.acts_as_elo_options[:one_way]
+          if self.class.respond_to?(:acts_as_elo_options) &&
+              !self.class.acts_as_elo_options.nil? &&
+              self.class.acts_as_elo_options[:one_way]
             one_way = true
           end
           one_way   ||= opts[:one_way]
@@ -100,6 +102,7 @@ module Acts
           opponent.elo_update(self, send_opts) unless one_way
 
           self.elo_rank = (elo_rank + coefficient*(points-expected)).round
+          puts "Calclated elo rank: #{self.elo_rank}"
         rescue Exception => e
           puts "Exception: #{e.message}"
         end
